@@ -143,18 +143,18 @@ is non-nil because Font Lock does not mark strings and comments
 for those modes, and the matcher will not know what is/is not a
 string."
   (cond
-   ;; Assume that if a mode defines such a function, it likely is
-   ;; beneficial to use it.  We know that `elisp-outline-search'
-   ;; (added in Emacs 31) is unnecessary here though.  It's purpose
-   ;; is to avoid matching parens at the bol inside strings, but we
-   ;; don't even try to match parens at all, so that's not relevant.
-   ((and (bound-and-true-p outline-search-function)
-         (not (eq outline-search-function 'elisp-outline-search)))
-    #'ignore)
-   (font-lock-keywords-only regexp)
-   ((lambda (limit)
-      (and (re-search-forward regexp limit t)
-           (not (nth 3 (syntax-ppss (match-beginning 0)))))))))
+    ;; Assume that if a mode defines such a function, it likely is
+    ;; beneficial to use it.  We know that `elisp-outline-search'
+    ;; (added in Emacs 31) is unnecessary here though.  It's purpose
+    ;; is to avoid matching parens at the bol inside strings, but we
+    ;; don't even try to match parens at all, so that's not relevant.
+    ((and (bound-and-true-p outline-search-function)
+          (not (eq outline-search-function 'elisp-outline-search)))
+     #'ignore)
+    (font-lock-keywords-only regexp)
+    ((lambda (limit)
+       (and (re-search-forward regexp limit t)
+            (not (nth 3 (syntax-ppss (match-beginning 0)))))))))
 
 (defvar outline-minor-faces--font-lock-keywords
   '((eval . (list (outline-minor-faces--syntactic-matcher
@@ -162,22 +162,22 @@ string."
                        (concat
                         "^\\(?:"
                         (cond
-                         ((not (apply #'derived-mode-p
-                                      outline-minor-faces--lisp-modes))
-                          outline-regexp)
-                         ;; `emacs-lisp-mode' Emacs >= 29
-                         ((string-suffix-p "\\(autoload\\)\\)" outline-regexp)
-                          ";;;\\(;* [^ \t\n]\\)")
-                         ;; `emacs-lisp-mode' Emacs <= 28
-                         ((string-suffix-p "\|###autoload\\)\\|(" outline-regexp)
-                          (concat (substring outline-regexp 0 -18) "\\)"))
-                         ;; `scheme-mode'
-                         ((string-suffix-p "\\|(...." outline-regexp)
-                          (substring outline-regexp 0 -7))
-                         ;; `lisp-data-mode', `lisp-mode' et al.
-                         ((string-suffix-p "\\|(" outline-regexp)
-                          (substring outline-regexp 0 -3))
-                         (t outline-regexp))
+                          ((not (apply #'derived-mode-p
+                                       outline-minor-faces--lisp-modes))
+                           outline-regexp)
+                          ;; `emacs-lisp-mode' Emacs >= 29
+                          ((string-suffix-p "\\(autoload\\)\\)" outline-regexp)
+                           ";;;\\(;* [^ \t\n]\\)")
+                          ;; `emacs-lisp-mode' Emacs <= 28
+                          ((string-suffix-p "\|###autoload\\)\\|(" outline-regexp)
+                           (concat (substring outline-regexp 0 -18) "\\)"))
+                          ;; `scheme-mode'
+                          ((string-suffix-p "\\|(...." outline-regexp)
+                           (substring outline-regexp 0 -7))
+                          ;; `lisp-data-mode', `lisp-mode' et al.
+                          ((string-suffix-p "\\|(" outline-regexp)
+                           (substring outline-regexp 0 -3))
+                          (t outline-regexp))
                         "\\).*\n?")))
                   0 '(outline-minor-faces--get-face) t))
     ("-\\*-.*-\\*-" 0 'outline-minor-file-local-prop-line t)))
@@ -231,5 +231,6 @@ string."
 (provide 'outline-minor-faces)
 ;; Local Variables:
 ;; indent-tabs-mode: nil
+;; lisp-indent-local-overrides: ((cond . 0) (interactive . 0))
 ;; End:
 ;;; outline-minor-faces.el ends here

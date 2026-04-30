@@ -208,9 +208,9 @@ string."
 
 (defun outline-minor-faces--level ()
   (save-excursion
-    (and (if-let ((fn (bound-and-true-p outline-search-function))
-                  ;; See `outline-minor-faces--syntactic-matcher'.
-                  (_(not (eq fn 'elisp-outline-search))))
+    (and (if-let* ((fn (bound-and-true-p outline-search-function))
+                   ;; See `outline-minor-faces--syntactic-matcher'.
+                   (_(not (eq fn 'elisp-outline-search))))
              (funcall fn nil nil nil t)
            (beginning-of-line)
            (looking-at outline-regexp))
